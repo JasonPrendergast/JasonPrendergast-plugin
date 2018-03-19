@@ -15,12 +15,15 @@ class BFIGitHubPluginUpdater {
         add_filter( "pre_set_site_transient_update_plugins", array( $this, "setTransitent" ) );
         add_filter( "plugins_api", array( $this, "setPluginInfo" ), 10, 3 );
         add_filter( "upgrader_post_install", array( $this, "postInstall" ), 10, 3 );
+        add_shortcode( 'api_call', array( $this, 'getRepoReleaseInfo' ) );
  
         $this->pluginFile = $pluginFile;
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
         $this->accessToken = $accessToken;
     }
+    
+    
  
     // Get information regarding our plugin from WordPress
     private function initPluginData() {
@@ -30,7 +33,7 @@ class BFIGitHubPluginUpdater {
     }
  
     // Get information regarding our plugin from GitHub
-    private function getRepoReleaseInfo() 
+    public function getRepoReleaseInfo() 
     {
         // Only do this once
         if ( ! empty( $this->githubAPIResult ) ) 
@@ -55,7 +58,8 @@ class BFIGitHubPluginUpdater {
         // Use only the latest release
         if ( is_array( $this->githubAPIResult ) ) 
         {
-            $this->githubAPIResult = $this->githubAPIResult[0];
+            d($this->githubAPIResult = $this->githubAPIResult[0]);
+            #s($this->githubAPIResult = $this->githubAPIResult[0]);
         }
         
     }

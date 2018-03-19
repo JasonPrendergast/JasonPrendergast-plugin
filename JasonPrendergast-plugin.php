@@ -68,9 +68,9 @@ if (class_exists('JasonPrendergastPlugin'))
     $jasonPrendergastPlugin = new JasonPrendergastPlugin();
 }
 require_once( 'BFIGitHubPluginUploader.php' );
-if ( is_admin() ) {
+//if ( is_admin() ) {
     new BFIGitHubPluginUpdater( __FILE__, 'JasonPrendergast', "JasonPrendergast-plugin" );
-}
+//}
 //activation
 register_activation_hook(__FILE__,array($jasonPrendergastPlugin,'activate'));
 //deactivation
