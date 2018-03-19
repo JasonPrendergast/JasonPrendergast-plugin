@@ -1,15 +1,6 @@
 <?php
 
-/* 
- * 
- * * Plugin Name: JasonPrendergast-plugin
- * Plugin URI: https://github.com/JasonPrendergast
- * Description: Trigger this file on uninstall to clean up 
- * Version: 0.0.1
- * Author: Jason Prendergast
- * Author URI: https://github.com/JasonPrendergast
- * Text Domain: JasonPrendergast-plugin
- */
+
 
 if (!defined('WP_UNINSTALL_PLUGIN'))
 {

@@ -1,16 +1,6 @@
 <?php
 
-/* 
- * @package JasonPrendergast-plugin
- */
-/*
- * Plugin Name: JasonPrendergast-plugin
- * Plugin URI: https://github.com/JasonPrendergast
- * Description:First try at building an auto update class for WP in php  
- * Version: 0.0.1
- * Author: Jason Prendergast
- * Author URI: https://github.com/JasonPrendergast
- */
+
 class BFIGitHubPluginUpdater {
  
     private $slug; // plugin slug
