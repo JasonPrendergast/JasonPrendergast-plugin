@@ -58,16 +58,24 @@ class BFIGitHubPluginUpdater {
         // Use only the latest release
         if ( is_array( $this->githubAPIResult ) ) 
         {
-            d($this->githubAPIResult = $this->githubAPIResult[0]);
+            #d($this->githubAPIResult = $this->githubAPIResult[0]);
             #s($this->githubAPIResult = $this->githubAPIResult[0]);
+            $this->githubAPIResult = $this->githubAPIResult[0];
+            
         }
         
     }
  
     // Push in plugin version information to get the update notification
     public function setTransitent( $transient ) {
-        // code here
-        return $transient;
+        // If we have checked the plugin data before, don't re-check
+        if ( empty( $transient->checked ) ) 
+        {
+            return $transient;
+        }
+        
+        
+       
     }
  
     // Push in plugin version information to display in the details lightbox
