@@ -30,8 +30,34 @@ class BFIGitHubPluginUpdater {
     }
  
     // Get information regarding our plugin from GitHub
-    private function getRepoReleaseInfo() {
-        // code here
+    private function getRepoReleaseInfo() 
+    {
+        // Only do this once
+        if ( ! empty( $this->githubAPIResult ) ) 
+        {
+            return;
+        }
+        // Query the GitHub API
+        $url = "https://api.github.com/repos/{$this->username}/{$this->repo}/releases";
+ 
+        // We need the access token for private repos
+        if ( ! empty( $this->accessToken ) ) 
+        {
+            $url = add_query_arg( array( "access_token" => $this->accessToken ), $url );
+        }
+ 
+        // Get the results
+        $this->githubAPIResult = wp_remote_retrieve_body( wp_remote_get( $url ) );
+        if ( ! empty( $this->githubAPIResult ) ) 
+        {
+            $this->githubAPIResult = @json_decode( $this->githubAPIResult );
+        }
+        // Use only the latest release
+        if ( is_array( $this->githubAPIResult ) ) 
+        {
+            $this->githubAPIResult = $this->githubAPIResult[0];
+        }
+        
     }
  
     // Push in plugin version information to get the update notification
