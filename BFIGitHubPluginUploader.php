@@ -67,20 +67,118 @@ class BFIGitHubPluginUpdater {
     }
  
     // Push in plugin version information to get the update notification
-    public function setTransitent( $transient ) {
+    public function setTransitent( $transient ) 
+    {
         // If we have checked the plugin data before, don't re-check
         if ( empty( $transient->checked ) ) 
         {
             return $transient;
         }
-        
-        
-       
+        // Get plugin & GitHub release information
+        $this->initPluginData();
+        $this->getRepoReleaseInfo();
+        // Check the versions if we need to do an update
+        $doUpdate = version_compare( $this->githubAPIResult->tag_name, $transient->checked[$this->slug] );
+        // Update the transient to include our updated plugin data
+        if ( $doUpdate == 1 ) 
+        {
+            $package = $this->githubAPIResult->zipball_url;
+            
+ 
+            // Include the access token for private GitHub repos
+            if ( !empty( $this->accessToken ) ) 
+            {
+                $package = add_query_arg( array( "access_token" => $this->accessToken ), $package );
+            }
+ 
+            $obj = new stdClass();
+            $obj->slug = $this->slug;
+            $obj->new_version = $this->githubAPIResult->tag_name;
+            $obj->url = $this->pluginData["PluginURI"];
+            $obj->package = $package;
+            $transient->response[$this->slug] = $obj;
+        }   
+ 
+        return $transient;
     }
  
     // Push in plugin version information to display in the details lightbox
-    public function setPluginInfo( $false, $action, $response ) {
-        // code ehre
+    public function setPluginInfo( $false, $action, $response ) 
+    {
+        // Get plugin & GitHub release information
+        $this->initPluginData();
+        $this->getRepoReleaseInfo();
+        
+        // If nothing is found, do nothing
+        if ( empty( $response->slug ) || $response->slug != $this->slug ) 
+        {
+             return false;
+        }
+        // Add our plugin information
+        $response->last_updated = $this->githubAPIResult->published_at;
+        $response->slug = $this->slug;
+        $response->plugin_name  = $this->pluginData["Name"];
+        $response->version = $this->githubAPIResult->tag_name;
+        $response->author = $this->pluginData["AuthorName"];
+        $response->homepage = $this->pluginData["PluginURI"];
+ 
+        // This is our release download zip file
+        $downloadLink = $this->githubAPIResult->zipball_url;
+ 
+        // Include the access token for private GitHub repos
+        if ( !empty( $this->accessToken ) ) 
+        {
+            $downloadLink = add_query_arg(
+            array( "access_token" => $this->accessToken ),$downloadLink);
+        }
+        $response->download_link = $downloadLink;
+        
+        // We're going to parse the GitHub markdown release notes, include the parser
+        require_once( plugin_dir_path( __FILE__ ) . "Parsedown.php" );
+        /*
+         * Here is all the formatting of the github release data in to the format 
+         * expected by WordPress this will appear on the admin plugin page
+         * displaying all the current data and if there is an update the extra 
+         * data will also appear. I am so happy someone else has gone to the 
+         * trouble of doing this and saved me the effort. But when we have 
+         * display issues this is the only place that will need to be edited 
+         * and I am using an external source. Need to give this:
+         * https://github.com/erusev/parsedown credit for the fine parser 
+         * thank you so much  
+         */
+        
+        // Create tabs in the lightbox
+        $response->sections = array('description' => $this->pluginData["Description"],
+        'changelog' => class_exists( "Parsedown" )? Parsedown::instance()->parse
+        ( $this->githubAPIResult->body ): $this->githubAPIResult->body);
+        // Gets the required version of WP if available
+        $matches = null;
+        preg_match( "/requires:\s([\d\.]+)/i", $this->githubAPIResult->body, $matches );
+        if ( ! empty( $matches ) ) 
+        {
+            if ( is_array( $matches ) ) 
+            {
+                if ( count( $matches ) > 1 ) 
+                {
+                    $response->requires = $matches[1];
+                }
+            }
+        }
+ 
+        // Gets the tested version of WP if available
+        $matches = null;
+        preg_match( "/tested:\s([\d\.]+)/i", $this->githubAPIResult->body, $matches );
+        if ( ! empty( $matches ) ) 
+        {
+            if ( is_array( $matches ) ) 
+            {
+                if ( count( $matches ) > 1 ) 
+                {
+                    $response->tested = $matches[1];
+                }
+            }
+        }
+ 
         return $response;
     }
  
