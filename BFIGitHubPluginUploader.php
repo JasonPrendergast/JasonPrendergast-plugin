@@ -152,6 +152,7 @@ class BFIGitHubPluginUpdater
          * and I am using an external source. Need to give this:
          * https://github.com/erusev/parsedown credit for the fine parser 
          * thank you so much  
+         * 
          */
         
         // Create tabs in the lightbox
