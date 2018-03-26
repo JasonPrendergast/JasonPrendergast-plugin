@@ -1,7 +1,8 @@
 <?php
 
 
-class BFIGitHubPluginUpdater {
+class BFIGitHubPluginUpdater 
+{
  
     private $slug; // plugin slug
     private $pluginData; // plugin data
@@ -204,5 +205,5 @@ class BFIGitHubPluginUpdater {
  
         return $result;
         
-        }
+    }
 }
