@@ -7,7 +7,7 @@
  * Plugin Name: JasonPrendergast-plugin
  * Plugin URI: https://github.com/JasonPrendergast
  * Description: This is my first attempt at writing a  plugin for Wordpress  
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author: Jason Prendergast
  * Author URI: https://github.com/JasonPrendergast
  * Text Domain: JasonPrendergast-plugin
