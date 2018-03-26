@@ -183,8 +183,26 @@ class BFIGitHubPluginUpdater {
     }
  
     // Perform additional actions to successfully install our plugin
-    public function postInstall( $true, $hook_extra, $result ) {
-        // code here
+    public function postInstall( $true, $hook_extra, $result ) 
+    {
+        // Get plugin information
+        $this->initPluginData();
+        // Remember if our plugin was previously activated
+        $wasActivated = is_plugin_active( $this->slug );
+        // Since we are hosted in GitHub, our plugin folder would have a dirname of
+        // reponame-tagname change it to our original one:
+        global $wp_filesystem;
+        $pluginFolder = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . dirname( $this->slug );
+        $wp_filesystem->move( $result['destination'], $pluginFolder );
+        $result['destination'] = $pluginFolder;
+        
+        // Re-activate plugin if needed
+        if ( $wasActivated ) 
+        {
+            $activate = activate_plugin( $this->slug );
+        }
+ 
         return $result;
-    }
+        
+        }
 }
