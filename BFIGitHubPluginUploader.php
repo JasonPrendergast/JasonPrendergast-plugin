@@ -111,10 +111,14 @@ class BFIGitHubPluginUpdater
         $this->getRepoReleaseInfo();
         
         // If nothing is found, do nothing
-        if (!isset($response->slug) || ($response->slug != $this->plugin_slug)) 
+        if ( empty( $response->slug ) || $response->slug != $this->slug ) 
         {
-            return $false;
+            return false;
         }
+        //if (!isset($response->slug) || ($response->slug != $this->plugin_slug)) 
+        //{
+        //    return $false;
+        //}
         
         
         // Add our plugin information
