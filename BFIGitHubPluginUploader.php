@@ -111,10 +111,12 @@ class BFIGitHubPluginUpdater
         $this->getRepoReleaseInfo();
         
         // If nothing is found, do nothing
-        if ( empty( $response->slug ) || $response->slug != $this->slug ) 
+        if (!isset($response->slug) || ($response->slug != $this->plugin_slug)) 
         {
-             return false;
+            return $false;
         }
+        
+        
         // Add our plugin information
         $response->last_updated = $this->githubAPIResult->published_at;
         $response->slug = $this->slug;
@@ -182,7 +184,30 @@ class BFIGitHubPluginUpdater
  
         return $response;
     }
+    /**
+     * Perform check before installation starts.
+     *
+     * @param  boolean $true
+     * @param  array   $args
+     * @return null
+     */
+    public function preInstall( $true, $args )
+    {
+        // Get plugin information
+                $this->initPluginData();
  
+                // Check if the plugin was installed before...
+        $this->pluginActivated = is_plugin_active( $this->slug );
+    }
+    
+    /**
+     * Perform additional actions to successfully install our plugin
+     *
+     * @param  boolean $true
+     * @param  string $hook_extra
+     * @param  object $result
+     * @return object
+     */
     // Perform additional actions to successfully install our plugin
     public function postInstall( $true, $hook_extra, $result ) 
     {
